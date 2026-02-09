@@ -35,8 +35,8 @@
     /* Cute chocolate "emoji" (pure CSS) */
     .choco{
       position:absolute;
-      width:86px; height:86px;
-      border-radius:18px;
+      width:120px; height:120px;
+      border-radius:22px;
       background: linear-gradient(180deg,#5a2d14,#3d1d0d);
       box-shadow: 0 18px 35px rgba(0,0,0,.18);
       transform: translate(-50%, -50%);
@@ -46,22 +46,29 @@
     }
     .choco::before{
       content:"";
-      position:absolute; inset:10px;
-      border-radius:14px;
+      position:absolute; inset:12px;
+      border-radius:16px;
       background: linear-gradient(180deg,#6a3518,#4a240f);
       opacity:.9;
     }
     .choco::after{
       content:"🍫";
       position:relative;
-      font-size:34px;
+      font-size:42px;
       filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
     }
-    .choco .face{
-      position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
-      font-size:18px;
+    .choco .eyes{
+      position:absolute; top:18px; left:50%; transform:translateX(-50%);
+      font-size:22px;
+      z-index:1;
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,.2));
+      letter-spacing:6px;
+    }
+    .choco .mouth{
+      position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+      font-size:22px;
+      z-index:1;
       filter: drop-shadow(0 4px 6px rgba(0,0,0,.25));
-      opacity:.95;
     }
 
     /* Peeking chocolate */
@@ -79,29 +86,40 @@
     .peek-wrap.show{ right:18px; }
     .peek{
       position:absolute; right:0; top:50%; transform:translateY(-50%);
-      width:92px; height:92px;
-      border-radius:18px;
+      width:130px; height:130px;
+      border-radius:22px;
       background: linear-gradient(180deg,#5a2d14,#3d1d0d);
       box-shadow: 0 18px 35px rgba(0,0,0,.18);
       display:grid; place-items:center;
     }
     .peek::before{
       content:"";
-      position:absolute; inset:10px;
-      border-radius:14px;
+      position:absolute; inset:12px;
+      border-radius:16px;
       background: linear-gradient(180deg,#6a3518,#4a240f);
       opacity:.9;
     }
     .peek::after{
       content:"🍫";
       position:relative;
-      font-size:34px;
+      font-size:42px;
       filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    }
+    .peek .peek-eyes{
+      position:absolute; top:20px; left:50%; transform:translateX(-50%);
+      font-size:22px; z-index:1;
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,.2));
+      letter-spacing:6px;
+    }
+    .peek .peek-mouth{
+      position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
+      font-size:22px; z-index:1;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,.25));
     }
 
     .card{
       position:absolute;
-      right:96px;
+      right:134px;
       top:50%;
       transform: translateY(-50%);
       max-width:340px;
@@ -166,7 +184,8 @@
   <div class="stage" id="stage">
     <!-- runaway chocolate -->
     <div class="choco" id="runner" aria-label="runaway chocolate">
-      <div class="face" id="face">😛</div>
+      <div class="eyes" id="eyes">👀</div>
+      <div class="mouth" id="mouth">😛</div>
     </div>
 
     <!-- peeking chocolate + message -->
@@ -176,14 +195,17 @@
         <p>I won’t run away.</p>
         <div class="msg">you are sweetness of my life</div>
       </div>
-      <div class="peek"></div>
+      <div class="peek">
+        <div class="peek-eyes">👀</div>
+        <div class="peek-mouth">😊</div>
+      </div>
     </div>
   </div>
 
   <script>
     const stage = document.getElementById("stage");
     const runner = document.getElementById("runner");
-    const face = document.getElementById("face");
+    const mouth = document.getElementById("mouth");
     const hint = document.getElementById("hint");
     const peekWrap = document.getElementById("peekWrap");
 
@@ -241,7 +263,7 @@
 
       if (dist < scareRadius){
         // Runner looks cheeky
-        face.textContent = ["😛","😆","😝","🙃"][escapes % 4];
+        mouth.textContent = ["😛","😆","😝","🙃"][escapes % 4];
 
         // Move away from mouse
         const ux = dx / dist;
