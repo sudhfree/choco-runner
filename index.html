@@ -210,6 +210,41 @@
       .hint{ font-size:13px; }
       .card{ max-width:200px; }
       .side-peek .choco-peek{ width:80px; height:80px; }
+      .choco-day{ font-size:32px !important; }
+    }
+
+    /* Happy Chocolate Day banner */
+    .choco-day{
+      position:fixed;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%) scale(.5);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size:52px;
+      font-weight:900;
+      text-align:center;
+      color:transparent;
+      background: linear-gradient(180deg, #7B3F00, #4E2A04 40%, #D2691E 60%, #7B3F00);
+      -webkit-background-clip:text;
+      background-clip:text;
+      text-shadow: 0 4px 20px rgba(78,42,4,.25);
+      filter: drop-shadow(0 6px 20px rgba(78,42,4,.3));
+      opacity:0;
+      transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2,.9,.3,1);
+      z-index:20;
+      pointer-events:none;
+      line-height:1.2;
+      letter-spacing:1px;
+    }
+    .choco-day.show{
+      opacity:1;
+      transform:translate(-50%,-50%) scale(1);
+    }
+    .choco-day .sub{
+      display:block;
+      font-size:22px;
+      margin-top:6px;
+      font-weight:600;
+      letter-spacing:2px;
     }
   </style>
 </head>
@@ -266,6 +301,11 @@
     <div class="card">
       <div class="msg">&#x1F48C; Forever yours, sweet one</div>
     </div>
+  </div>
+
+  <div class="choco-day" id="chocoDay">
+    &#x1F36B; Happy Chocolate Day &#x1F36B;
+    <span class="sub">&#x2764;&#xFE0F; made with love &#x2764;&#xFE0F;</span>
   </div>
 
   <script>
@@ -380,6 +420,12 @@
             }
           }, i * 450);
         });
+
+        // Show "Happy Chocolate Day" after all peeks
+        setTimeout(() => {
+          const banner = document.getElementById("chocoDay");
+          if(banner) banner.classList.add("show");
+        }, peeks.length * 450 + 600);
       }, 900);
     }
 
