@@ -43,9 +43,10 @@
       cursor:pointer;
     }
     .choco img{
-      width:100%; height:auto;
-      border-radius:18px;
-      filter: drop-shadow(0 14px 28px rgba(0,0,0,.25));
+      width:100%; height:100%;
+      object-fit:cover;
+      border-radius:50%;
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,.3));
     }
     .choco .face-row{
       position:absolute; top:50%; left:50%;
@@ -112,9 +113,10 @@
       position:relative; flex-shrink:0;
     }
     .side-peek .choco-peek img{
-      width:100%; height:auto;
-      border-radius:18px;
-      filter: drop-shadow(0 10px 22px rgba(0,0,0,.22));
+      width:100%; height:100%;
+      object-fit:cover;
+      border-radius:50%;
+      filter: drop-shadow(0 10px 22px rgba(0,0,0,.25));
     }
     .side-peek .peek-face{
       position:absolute; top:50%; left:50%;
@@ -217,7 +219,7 @@
 
   <div class="stage" id="stage">
     <div class="choco" id="runner" aria-label="runaway chocolate">
-      <img src="https://cdn-icons-png.flaticon.com/512/3081/3081967.png" alt="chocolate" draggable="false" />
+      <img src="chocolate.jpg" alt="chocolate" draggable="false" />
       <div class="face-row">
         <div class="eyes" id="eyes">&#x1F440;</div>
         <div class="mouth" id="mouth">&#x1F61B;</div>
@@ -228,7 +230,7 @@
   <!-- 4 peeking chocolates from all sides -->
   <div class="side-peek from-right" id="peekRight">
     <div class="choco-peek">
-      <img src="https://cdn-icons-png.flaticon.com/512/3081/3081967.png" alt="chocolate" draggable="false" />
+      <img src="chocolate.jpg" alt="chocolate" draggable="false" />
       <div class="peek-face"><div class="peek-eyes">&#x1F440;</div><div class="peek-mouth">&#x1F60A;</div></div>
     </div>
     <div class="card">
@@ -238,7 +240,7 @@
 
   <div class="side-peek from-left" id="peekLeft">
     <div class="choco-peek">
-      <img src="https://cdn-icons-png.flaticon.com/512/3081/3081967.png" alt="chocolate" draggable="false" />
+      <img src="chocolate.jpg" alt="chocolate" draggable="false" />
       <div class="peek-face"><div class="peek-eyes">&#x1F440;</div><div class="peek-mouth">&#x1F970;</div></div>
     </div>
     <div class="card">
@@ -248,7 +250,7 @@
 
   <div class="side-peek from-top" id="peekTop">
     <div class="choco-peek">
-      <img src="https://cdn-icons-png.flaticon.com/512/3081/3081967.png" alt="chocolate" draggable="false" />
+      <img src="chocolate.jpg" alt="chocolate" draggable="false" />
       <div class="peek-face"><div class="peek-eyes">&#x1F440;</div><div class="peek-mouth">&#x1F618;</div></div>
     </div>
     <div class="card">
@@ -258,7 +260,7 @@
 
   <div class="side-peek from-bottom" id="peekBottom">
     <div class="choco-peek">
-      <img src="https://cdn-icons-png.flaticon.com/512/3081/3081967.png" alt="chocolate" draggable="false" />
+      <img src="chocolate.jpg" alt="chocolate" draggable="false" />
       <div class="peek-face"><div class="peek-eyes">&#x1F440;</div><div class="peek-mouth">&#x1F607;</div></div>
     </div>
     <div class="card">
@@ -287,15 +289,25 @@
     // Timer - 20 seconds
     const gameDuration = 20;
     let timeLeft = gameDuration;
-    const gameTimer = setInterval(() => {
-      timeLeft--;
-      timerEl.textContent = "\u23F1 " + timeLeft + "s";
-      if (timeLeft <= 5) timerEl.classList.add("urgent");
-      if (timeLeft <= 0) {
-        clearInterval(gameTimer);
-        burstAndReveal();
-      }
-    }, 1000);
+    let gameTimer = null;
+
+    function startTimer(){
+      gameTimer = setInterval(function(){
+        timeLeft--;
+        if(timerEl) timerEl.textContent = "\u23F1 " + timeLeft + "s";
+        if (timeLeft <= 5 && timerEl) timerEl.classList.add("urgent");
+        if (timeLeft <= 0) {
+          clearInterval(gameTimer);
+          gameTimer = null;
+          burstAndReveal();
+        }
+      }, 1000);
+    }
+
+    // Also set a hard fallback timeout
+    setTimeout(function(){ burstAndReveal(); }, (gameDuration + 1) * 1000);
+
+    startTimer();
 
     const scareRadius = 120;
     const jumpStrength = 180;
@@ -340,9 +352,11 @@
     function burstAndReveal(){
       if (offered) return;
       offered = true;
-      clearInterval(gameTimer);
-      timerEl.textContent = "\u23F1 0s";
-      timerEl.classList.add("urgent");
+      if(gameTimer){ clearInterval(gameTimer); gameTimer = null; }
+      if(timerEl){
+        timerEl.textContent = "\u23F1 0s";
+        timerEl.classList.add("urgent");
+      }
 
       // Burst the runner!
       spawnBurstParticles();
